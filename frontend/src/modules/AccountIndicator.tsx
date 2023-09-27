@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Menu } from '@mui/material';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import cryptoRandomString from "crypto-random-string";
 
 
-const DropdownButton = () => {
+const DropdownButton = ({ handleUserData, userData }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [characterPortrait, setCharacterPortrait] = useState<string | null>(null);
 
     const handleOpenMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -25,7 +24,6 @@ const DropdownButton = () => {
         return (urlFirstPart + generateUrlSafeToken() + urlLastPart)
     }
 
-
     const postDataToServer = async () => {
         const getCodeQueryParam = () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -34,8 +32,9 @@ const DropdownButton = () => {
         const queryData = getCodeQueryParam();
         const backendRequestUrl = "http://localhost:5000/dev/token";
 
+
         if (queryData != null) {
-            if (characterPortrait == null) {
+            if (userData == null) {
                 try {
                     const response = await fetch(backendRequestUrl, {
                         method: "POST",
@@ -64,13 +63,28 @@ const DropdownButton = () => {
     useEffect(() => {
         postDataToServer().then((data) => {
             if (data && data['character_portrait']) {
-                setCharacterPortrait(data['character_portrait']);
+                handleUserData(data)
             }
         }).catch((error) => {
             console.error("Error:", error);
         });
     }, []);
 
+    function dropdownMenuElements(userData) {
+        if (userData == null) {
+            return (
+                <Button color="secondary" href={AuthURL()}>
+                    Log in
+                </Button>
+            );
+        } else {
+            return (
+                <Button color="secondary" onClick={() => handleUserData(null)}>
+                    Log out
+                </Button>
+            );
+        }
+    }
 
     return (
         <div>
@@ -82,8 +96,8 @@ const DropdownButton = () => {
                 aria-haspopup="true"
                 style={{ height: '64px', padding: 0 }}
             >
-                {characterPortrait ? (
-                    <img src={characterPortrait} alt="Character Portrait"
+                {userData ? (
+                    <img src={userData['character_portrait']} alt="Character Portrait"
                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5%' }} />
                 ) : (
                     <PersonRoundedIcon />
@@ -103,10 +117,10 @@ const DropdownButton = () => {
                     horizontal: 'center',
                 }}
             >
-                <Button color={"secondary"} href={AuthURL()}>Log in</Button>
+                {dropdownMenuElements(userData)}
             </Menu>
         </div>
-    );
-};
+    )
+}
 
 export default DropdownButton;

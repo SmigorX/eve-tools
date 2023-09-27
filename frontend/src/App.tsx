@@ -1,5 +1,6 @@
 import ResponsiveAppBar from "./modules/TopMenu.tsx";
 import { ThemeProvider, createTheme } from '@mui/material';
+import {useState} from "react";
 
 
 const theme = createTheme({
@@ -13,17 +14,21 @@ const theme = createTheme({
     },
 });
 
-function funny() {
-    (console.log("Hey, where are you looking?! My page is up here!"))
-}
+function funny() {(console.log("Hey, where are you looking?! My page is up here!"))}
 funny()
 
 function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <ResponsiveAppBar />
-    </ThemeProvider>
-)
+    const [userData, setUserData] = useState<null | Record<number, string>>(null);
+
+    const handleUserData = (userData: Record<number, string>) => {
+        setUserData(userData)
+    };
+
+    return (
+        <ThemeProvider theme={theme}>
+            <ResponsiveAppBar handleUserData={handleUserData} userData={userData}/>
+        </ThemeProvider>
+        )
 }
 
 export default App

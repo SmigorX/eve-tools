@@ -8,7 +8,7 @@ import Container from '@mui/material/Container';
 import AdbIcon from '@mui/icons-material/Adb';
 import DropdownButton from "./AccountIndicator.tsx";
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar({ handleUserData, userData }) {
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
@@ -75,7 +75,7 @@ function ResponsiveAppBar() {
                         EVETOOLS
                     </Typography>
                     </div>
-                    <DropdownButton />
+                    <DropdownButton handleUserData={handleUserData} userData={userData}/>
                 </Toolbar>
             </Container>
         </AppBar>

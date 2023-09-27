@@ -24,8 +24,10 @@ dist-ssr
 *.sln
 *.sw?
 
+/frontend/src/dev/
 
 # backend
 /backend/.idea
 /backend/testing/
 /backend/venv/
+
