@@ -6,7 +6,7 @@ import requests
 
 app = FastAPI()
 
-origins = [                         # origin of requests
+origins = [
     "http://localhost:5173",
 ]
 
@@ -48,6 +48,7 @@ async def token_exchange(authCode: int) -> str:
     token = requests.post(request_url, headers=headers, data=body)
 
     if token.status_code == 200:
+        print(token.json())
         return str(token.json()['access_token'])
     else:
         return token.status_code
