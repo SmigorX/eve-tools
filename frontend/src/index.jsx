@@ -4,7 +4,6 @@ import App from './App.jsx';
 import { BrowserRouter } from 'react-router-dom';
 import {CookiesProvider} from "react-cookie";
 import TopMenu from "./components/TopMenu.jsx";
-import Background from "./components/Background.jsx";
 
 export const app_colors = () => {
     return {
@@ -18,13 +17,12 @@ export const app_colors = () => {
 function page_layout() {
     return(
     <CookiesProvider>
-        <Background />
-        <TopMenu />
-        <div style={{textAlign: "center"}}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </div>
+            <TopMenu />
+            <div style={{textAlign: "center"}}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </div>
     </CookiesProvider>
     )
 }

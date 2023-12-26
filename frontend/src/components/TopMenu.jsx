@@ -26,6 +26,8 @@ export default function TopMenu() {
 }
 
 const DropdownMenu = (isDropdownVisible) => {
+    console.log(AuthURL())
+
     if (isDropdownVisible) {
         return (
             <div style={{position: "inherit", display: "flex", flexDirection: "column", width: "30mm", backgroundColor: "black"}}>
