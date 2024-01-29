@@ -1,0 +1,38 @@
+.navbar {
+  background-color: #111111;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.button {
+  background-color: #abcd12;
+  border: none;
+  color: black;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 0px 10px;
+  outline: none;
+  padding: 10px 20px;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  vertical-align: middle;
+}
+
+.character_button {
+  background-color: #abcd12;
+  border: none;
+  color: black;
+  cursor: pointer;
+  font-size: 5px;
+  outline: none;
+  z-index: 2;
+  vertical-align: middle;
+  horizontal-align: middle;
+  border-radius: 64px;
+  height: 64px;
+  width: 64px;
+}
+
