@@ -1,6 +1,8 @@
 # frontend
 /frontend/node_modules
 /frontend/.idea
+/nfrontend/node_modules
+/nfrontend/vite.config.js
 
 # backend
 /backend/.idea
@@ -9,3 +11,6 @@
 /backend/Secrets.py
 
 .idea
+
+./var.env
+/var.env

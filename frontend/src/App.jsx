@@ -1,31 +1,22 @@
-import { Route, Routes } from 'react-router-dom';
-import SSOExchange from "./pages/api/SSOExchange.jsx";
-import MainPage from "./pages/MainPage.jsx";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-
-const Categories = () => (
-    <div>
-        <h2>Categories</h2>
-        <p>Browse items by category.</p>
-    </div>
-);
-
-const Products = () => (
-    <div>
-        <h2>Products</h2>
-        <p>Browse individual products.</p>
-    </div>
-);
-
-export default function App() {
-    return (
-        <div>
-            <Routes>
-                <Route path="/api" element={<SSOExchange />}/>
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/" element={<MainPage />} />
-            </Routes>
-        </div>
-    );
+function App() {
+  return (
+    <>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<h1>Home</h1>} />
+          <Route path="/about" element={<h1>About</h1>} />
+          <Route path="/contact" element={<h1>Contact</h1>} />
+          <Route path="/login" element={<h1>Login</h1>} />
+          <Route path="*" element={<h1>Page not found</h1>} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
+
+export default App;

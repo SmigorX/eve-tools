@@ -1,74 +1,55 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship, Session
+import os
 
+Base = declarative_base()
 
-class Database:
-    """
-    Base classes making the ORM
-    """
-    class UserSessions(declarative_base()):
-        """
-        This class represents the user_sessions table in the database.
-        """
-        __tablename__ = 'user_sessions'
+class UserSessions(Base):
+    __tablename__ = "user_sessions"
 
-        session_token = Column(String, primary_key=True)
-        character_id = Column(Integer)
-        access_token = Column(String)
-        refresh_token = Column(String)
-        creation_time = Column(Float)
-        access_token_expiration_time = Column(Float)
+    session_token = Column(String, primary_key=True)
+    character_id = Column(Integer, ForeignKey('characters.character_id'))
 
-    def __init__(self, db_url):
-        """
-        :param db_url: the link to the database in the format postgresql://user:password@host:port/database
-        it is passed during the creation in order to make the engine and link to database
-        """
-        try:
-            self.engine = create_engine(db_url)
-            self.Session = sessionmaker(bind=self.engine)
-            self.session = self.Session()
+class Characters(Base):
+    __tablename__ = "characters"
 
-            self.UserSessions.metadata.create_all(self.engine)
+    character_id = Column(Integer, primary_key=True)
+    access_token = Column(String)
+    refresh_token = Column(String)
+    creation_time = Column(Float)
+    access_token_expiration_time = Column(Float)
+    character_name = Column(String)
+    character_portrait = Column(String)
 
-        except Exception as e:
-            print(e)
-            raise e
+def database_connection():
+    try:
+        postgres_user = os.getenv("POSTGRES_USER", "postgres")
+        postgres_password = os.getenv("POSTGRES_PASSWORD", "postgres")
+        db_url = f"postgresql://{postgres_user}:{postgres_password}@localhost:5432/evetoolsdb"
+        engine = create_engine(db_url)
+        with Session(engine) as session:
+            Base.metadata.create_all(bind=engine)
+            return session
 
-    """
-    Functions used to operate on the database
-    """
+    except Exception:
+        print("Could not connect to database")
 
-    def retrieve_character_id(self, session_token: str) -> int:
-        try:
-            result = self.session.query(self.UserSessions.character_id).filter_by(session_token=session_token).first()
+def add_new_session(session: Session, session_token: str, character_id: int):
+    try:
+        new_session = UserSessions.insert().values(
+            session_token=session_token, character_id=character_id)
+        session.execute(new_session)
+        session.commit()
+    except Exception as e:
+        raise e
+
+def retrieve_session(session: Session, session_token: str) -> int:
+    try:
+        result = session.query(UserSessions.character_id).filter_by(
+            session_token=session_token).first()
+        if result:
             return result.character_id
-        except Exception as e:
-            raise e
-
-    def retrieve_access_token_expiration(self, session_token: str) -> float:
-        try:
-            return self.session.query(self.UserSessions.access_token_expiration_time).filter_by(
-                session_token=session_token).first()
-        except Exception as e:
-            raise e
-
-    def retrieve_refresh_token(self, session_token: str) -> str:
-        try:
-            return self.session.query(self.UserSessions.refresh_token).filter_by(session_token=session_token).first()
-        except Exception as e:
-            raise e
-
-    def refresh_access_token(self, access_token: str, refresh_token: str, new_access_token_expiration: float):
-        try:
-            self.session.query(self.UserSessions).filter_by(refresh_token=refresh_token).update({
-                self.UserSessions.access_token: access_token,
-                self.UserSessions.access_token_expiration_time: new_access_token_expiration
-            })
-            self.session.commit()
-        except Exception as e:
-            raise e
-
-    def close(self):
-        self.session.close()
-        self.engine.dispose()
+        else:
+            raise ValueError("No character found for session token")
+    except Exception as e:
+        raise e

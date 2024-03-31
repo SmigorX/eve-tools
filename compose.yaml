@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:alpine
+    env_file: 
+      - ./var.env
+    expose:
+      - "5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    user: appuser
+
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - ./var.env
+    ports: 
+      - "5000:5000"
+    depends_on:
+      - db
